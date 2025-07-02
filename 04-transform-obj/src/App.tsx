@@ -17,34 +17,51 @@ function App(): JSX.Element {
 
     const canvas = canvasRef.current
     const scene = new THREE.Scene()
+    
+    // Add axes helper
+    const axesHelper = new THREE.AxesHelper(1)
+    scene.add(axesHelper)
 
-    // Add axes helper for both cases
-    const axesHelper = new THREE.AxesHelper(1);
-    scene.add(axesHelper);
-
-    let objectToLookAt: THREE.Object3D;
+    // Setup camera
+    const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height)
+    camera.position.z = 3
+    scene.add(camera)
 
     if (isGroup) {
       const group = new THREE.Group()
+
+      group.position.set(0, 1, 0)
       scene.add(group)
-      group.position.set(0, 1, 0);
 
-      const cube1 = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({ color: 0xff0000 }))
+      const cube1 = new THREE.Mesh(
+        new THREE.BoxGeometry(1, 1, 1), 
+        new THREE.MeshBasicMaterial({ color: 0xff0000 })
+      )
+      
       group.add(cube1)
-      cube1.position.set(0, 0, 0);
 
-      const cube2 = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({ color: 0x00ff00 }))
+      const cube2 = new THREE.Mesh(
+        new THREE.BoxGeometry(1, 1, 1), 
+        new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+      )
+      cube2.position.set(-2, 0, 0)
       group.add(cube2)
-      cube2.position.set(-2, 0, 0);
 
-      const cube3 = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({ color: 0x0000ff }))
+      const cube3 = new THREE.Mesh(
+        new THREE.BoxGeometry(1, 1, 1), 
+        new THREE.MeshBasicMaterial({ color: 0x0000ff })
+      )
+      cube3.position.set(2, 0, 0)
+      
       group.add(cube3)
-      cube3.position.set(2, 0, 0);
-
-      // Position the group so we can see it
-      // group.position.set(0.7, -0.6, 1);
-      objectToLookAt = group;
-
+      
+      // Position and rotate the group to make it visible
+      // group.position.set(0.5, 0, 0)
+      
+      // Look at the group
+      // camera.lookAt(group.position)
+      
+      console.log("Group added to scene")
     } else {
       const geo = new THREE.BoxGeometry(1, 1, 1)
 
@@ -57,38 +74,29 @@ function App(): JSX.Element {
       // mesh.position.x = 0.7;
       // mesh.position.y = -0.6;
       // mesh.position.z = 1;
-      mesh.position.set(0.7, -0.6, 1);
-      mesh.scale.set(2, 0.5, 0.5);
+      mesh.position.set(0.7, -0.6, 1)
+      mesh.scale.set(2, 0.5, 0.5)
 
       //solution of gimble lock
       mesh.rotation.reorder('YXZ')
       mesh.rotation.set(Math.PI / 4, Math.PI / 4, 0)
 
       scene.add(mesh)
-      console.log("distance from origin(0,0,0) to object posi:", mesh.position.length());
+      camera.lookAt(mesh.position)
+      
+      console.log("distance from origin(0,0,0) to object posi:", mesh.position.length())
       console.log("distance from any vector(0,1,2) to object posi:", mesh.position.distanceTo(new THREE.Vector3(0, 1, 2)))
-
-      objectToLookAt = mesh;
-    }
-
-    // Setup camera 
-    const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height)
-    camera.position.z = 3;
-    camera.lookAt(objectToLookAt.position)
-    scene.add(camera)
-
-    if (objectToLookAt) {
-      console.log("distance from camera to object position:", camera.position.distanceTo(objectToLookAt.position))
+      console.log("distance from camera to object posi:", camera.position.distanceTo(mesh.position))
     }
 
     // Setup renderer
     const renderer = new THREE.WebGLRenderer({
       canvas
     })
+
     renderer.setSize(sizes.width, sizes.height)
     renderer.render(scene, camera)
-
-  }, [isGroup]) // Add isGroup as dependency so effect runs when it changes
+  }, [isGroup])
 
   return (
     <>
@@ -96,7 +104,7 @@ function App(): JSX.Element {
         <canvas ref={canvasRef} className='webgl'></canvas>
         <div className="controls">
           <button onClick={() => setIsGroup(!isGroup)}>
-            Switch to {isGroup ? 'Single Mesh' : 'Group'}
+            Toggle {isGroup ? "Single Cube" : "Group"}
           </button>
         </div>
       </div>

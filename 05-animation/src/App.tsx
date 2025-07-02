@@ -1,10 +1,10 @@
-import { type JSX, useEffect, useRef, useState } from 'react'
+import { type JSX, useEffect, useRef } from 'react'
 import './App.css'
 import * as THREE from 'three'
+import gsap from 'gsap'
 
 function App(): JSX.Element {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [isGroup, setIsGroup] = useState<boolean>(true)
 
   useEffect(() => {
     // Make sure canvas exists
@@ -27,67 +27,23 @@ function App(): JSX.Element {
     camera.position.z = 3
     scene.add(camera)
 
-    if (isGroup) {
-      const group = new THREE.Group()
+    const geo = new THREE.BoxGeometry(1, 1, 1)
 
-      group.position.set(0, 1, 0)
-      scene.add(group)
+    const material = new THREE.MeshBasicMaterial({
+      color: 0xff0000,
+      // wireframe: true,
+    })
 
-      const cube1 = new THREE.Mesh(
-        new THREE.BoxGeometry(1, 1, 1), 
-        new THREE.MeshBasicMaterial({ color: 0xff0000 })
-      )
-      
-      group.add(cube1)
+    const mesh = new THREE.Mesh(geo, material)
 
-      const cube2 = new THREE.Mesh(
-        new THREE.BoxGeometry(1, 1, 1), 
-        new THREE.MeshBasicMaterial({ color: 0x00ff00 })
-      )
-      cube2.position.set(-2, 0, 0)
-      group.add(cube2)
+    mesh.rotation.set(0, 0, 0)
 
-      const cube3 = new THREE.Mesh(
-        new THREE.BoxGeometry(1, 1, 1), 
-        new THREE.MeshBasicMaterial({ color: 0x0000ff })
-      )
-      cube3.position.set(2, 0, 0)
-      
-      group.add(cube3)
-      
-      // Position and rotate the group to make it visible
-      // group.position.set(0.5, 0, 0)
-      
-      // Look at the group
-      // camera.lookAt(group.position)
-      
-      console.log("Group added to scene")
-    } else {
-      const geo = new THREE.BoxGeometry(1, 1, 1)
-
-      const material = new THREE.MeshBasicMaterial({
-        color: 0xff0000,
-        // wireframe: true,
-      })
-
-      const mesh = new THREE.Mesh(geo, material)
-      // mesh.position.x = 0.7;
-      // mesh.position.y = -0.6;
-      // mesh.position.z = 1;
-      mesh.position.set(0.7, -0.6, 1)
-      mesh.scale.set(2, 0.5, 0.5)
-
-      //solution of gimble lock
-      mesh.rotation.reorder('YXZ')
-      mesh.rotation.set(Math.PI / 4, Math.PI / 4, 0)
-
-      scene.add(mesh)
-      camera.lookAt(mesh.position)
-      
-      console.log("distance from origin(0,0,0) to object posi:", mesh.position.length())
-      console.log("distance from any vector(0,1,2) to object posi:", mesh.position.distanceTo(new THREE.Vector3(0, 1, 2)))
-      console.log("distance from camera to object posi:", camera.position.distanceTo(mesh.position))
-    }
+    scene.add(mesh)
+    camera.lookAt(mesh.position)
+    
+    console.log("distance from origin(0,0,0) to object posi:", mesh.position.length())
+    console.log("distance from any vector(0,1,2) to object posi:", mesh.position.distanceTo(new THREE.Vector3(0, 1, 2)))
+    console.log("distance from camera to object posi:", camera.position.distanceTo(mesh.position))
 
     // Setup renderer
     const renderer = new THREE.WebGLRenderer({
@@ -95,18 +51,43 @@ function App(): JSX.Element {
     })
 
     renderer.setSize(sizes.width, sizes.height)
-    renderer.render(scene, camera)
-  }, [isGroup])
+
+    // let time = Date.now();
+
+    const clock = new THREE.Clock()
+
+    gsap.to(mesh.position, {
+      x: 2, duration: 1, delay: 1
+    })
+    gsap.to(mesh.position, {
+      x: 0, duration: 1, delay: 2
+    })
+
+    //aniamtion
+    const tick = () => {
+
+      // const cur_time = Date.now();
+      // const delta = cur_time - time;
+      // time = cur_time;
+
+      // mesh.rotation.y += delta * 0.001;
+
+      // const elapsedTime = clock.getElapsedTime();
+      // mesh.rotation.y = elapsedTime * Math.PI * 2; // 360 deg / sec
+      // mesh.position.y = Math.sin(elapsedTime); //wave
+      // mesh.position.x = Math.cos(elapsedTime); //wave
+
+      renderer.render(scene, camera);
+      window.requestAnimationFrame(tick);
+    }
+
+    tick();
+  }, [])
 
   return (
     <>
       <div className='hero'>
         <canvas ref={canvasRef} className='webgl'></canvas>
-        <div className="controls">
-          <button onClick={() => setIsGroup(!isGroup)}>
-            Toggle {isGroup ? "Single Cube" : "Group"}
-          </button>
-        </div>
       </div>
     </>
   )
