@@ -1,2 +1,1 @@
-# ThreeJS
-Topic of ThreeJS which i learn from the course by bruno (ThreeJS journey) and code snippets  with Vite JS
+Topics of ThreeJS which i learn from the course by bruno simon (ThreeJS journey) and code snippets  with Vite JS
