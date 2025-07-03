@@ -54,7 +54,7 @@ function App(): JSX.Element {
 
     // let time = Date.now();
 
-    const clock = new THREE.Clock()
+    // const clock = new THREE.Clock()
 
     gsap.to(mesh.position, {
       x: 2, duration: 1, delay: 1
