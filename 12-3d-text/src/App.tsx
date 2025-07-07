@@ -30,7 +30,7 @@ function App(): JSX.Element {
     const textureloader = new THREE.TextureLoader()
     // Fix the texture path - it should be 'textures/matcaps' not 'texture/metcaps'
     const matcapTexture = textureloader.load(
-      './textures/matcaps/3.png',
+      './textures/matcaps/8.png',
       // Success callback
       (texture) => {
         console.log('Matcap texture loaded successfully')
@@ -49,7 +49,7 @@ function App(): JSX.Element {
       "/helvetiker_regular.typeface.json", 
       (font) => {
         console.log('Font loaded successfully:', font)
-        const textGeo = new TextGeometry('Nandani <3 Het', {
+        const textGeo = new TextGeometry('Three JS is Cool', {
           font: font,
           size: 0.5,
           depth: 0.2,
@@ -72,7 +72,7 @@ function App(): JSX.Element {
 
         const donutGeometry = new THREE.TorusGeometry(0.3, 0.2, 20, 45)
     
-        for(let i = 0; i < 150; i++)
+        for(let i = 0; i < 160; i++)
           {
              
               const donut = new THREE.Mesh(donutGeometry, textMaterial)
