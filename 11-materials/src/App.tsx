@@ -84,7 +84,7 @@ function App(): JSX.Element {
     //mesh depth material
     // const material = new THREE.MeshDepthMaterial()
 
-    //mesh lambert material - support env map - light need mateiral - like normal mesh material
+    //mesh lambert material - good performance - support env map - light need mateiral - like normal mesh material
     // const material = new THREE.MeshLambertMaterial()
     // material.map = doorColor
 
@@ -124,22 +124,22 @@ function App(): JSX.Element {
     const material = new THREE.MeshPhysicalMaterial()
     material.roughness = 0.5
     material.metalness = 0.5
-    // material.map = doorColor
-    // material.aoMap = doorAmbientOcclusion
-    // material.metalness = 1
-    // material.roughness = 1
-    // material.aoMapIntensity = 1
-    // material.displacementMap = doorHeight
-    // material.displacementScale = 0.1
-    // material.metalnessMap = doorMetalness
-    // material.roughnessMap = doorRoughness
-    // material.normalMap = doorNormal
-    // material.normalScale.set(0.5, 0.5)
-    // material.alphaMap = doorAlpha
-    // material.transparent = true
+    material.map = doorColor
+    material.aoMap = doorAmbientOcclusion
+    material.metalness = 1
+    material.roughness = 1
+    material.aoMapIntensity = 1
+    material.displacementMap = doorHeight
+    material.displacementScale = 0.1
+    material.metalnessMap = doorMetalness
+    material.roughnessMap = doorRoughness
+    material.normalMap = doorNormal
+    material.normalScale.set(0.5, 0.5)
+    material.alphaMap = doorAlpha
+    material.transparent = true
 
-    // material.clearcoat = 1 //simulate a thin layer of varnish on top of the actual material
-    // material.clearcoatRoughness = 0.1
+    material.clearcoat = 1 //simulate a thin layer of varnish on top of the actual material
+    material.clearcoatRoughness = 0.1
 
     // material.sheen = 1 //highlight the materrial when seen from narrow angle usually on fluffy material like fabric
     //  material.sheenRoughness = 0.25
@@ -169,9 +169,6 @@ function App(): JSX.Element {
     // gui.add(material, 'transmission').min(0).max(1).step(0.001)
     // gui.add(material, 'ior').min(1).max(10).step(0.001)
     // gui.add(material, 'thickness').min(0).max(1).step(0.001)
-
-
-
 
     const sphere = new THREE.Mesh(
       new THREE.SphereGeometry(0.5, 128, 128),
